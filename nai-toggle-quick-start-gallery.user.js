@@ -2,7 +2,7 @@
 // @name         NovelAI Toggle Quick Start Gallery
 // @name:ja      NovelAI Toggle Quick Start Gallery
 // @namespace    https://github.com/NeviumX/NovelAI-Toggle-Quick-Start-Gallery
-// @version      1.0.1
+// @version      1.0.2
 // @description 　Script to toggle the display of the Quick Start Gallery in NovelAI
 // @description:ja NovelAIのクイックスタートギャラリーの表示/非表示を切り替えるスクリプト
 // @author       Nevium7
@@ -147,11 +147,12 @@ class UIManager {
         }
         const rootElement = this.switch.parentElement;
         const displayStyle = isHidden ? 'none' : '';
-        for (const child of rootElement.children) {
-            if (child.id !== 'nai-quickstart-gallery-switcher') {
-                child.style.display = displayStyle;
+        rootElement.querySelectorAll(':scope > div').forEach(childDiv => {
+            if (childDiv.id !== 'nai-quickstart-gallery-switcher') {
+                childDiv.style.display = displayStyle;
+                //console.log(`Quick Start Gallery visibility set to: ${isHidden ? 'hidden' : 'visible'}`);
             }
-        }
+        });
     }
 }
 

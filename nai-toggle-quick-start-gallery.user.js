@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         NovelAI Toggle Quick Start Gallery
 // @name:ja      NovelAI Toggle Quick Start Gallery
-// @namespace    https://github.com/NeviumX/NovelAI-Prompt-Preset-Manager
-// @version      1.0.0
+// @namespace    https://github.com/NeviumX/NovelAI-Toggle-Quick-Start-Gallery
+// @version      1.0.1
 // @description 　Script to toggle the display of the Quick Start Gallery in NovelAI
 // @description:ja NovelAIのクイックスタートギャラリーの表示/非表示を切り替えるスクリプト
 // @author       Nevium7
@@ -93,7 +93,7 @@ class UIManager {
         if (this.switch) {
             this.switch.querySelector('input[type="checkbox"]').checked = this.isHidden;
         }
-        this.toggleVisiblitiy(this.isHidden);
+        this.toggleVisibility(this.isHidden);
     }
     injectUI(root) {
         const switcherID = 'nai-quickstart-gallery-switcher';
@@ -108,6 +108,7 @@ class UIManager {
     }
     destroy() {
         if (!this.switch) return;
+        this.toggleVisibility(false);
         if (this.switch.isConnected) this.switch.remove();
         this.switch = null;
     }
@@ -130,7 +131,7 @@ class UIManager {
 
         input.addEventListener('change', (e) => {
             this.isHidden = e.target.checked;
-            this.toggleVisiblitiy(this.isHidden);
+            this.toggleVisibility(this.isHidden);
             GM_setValue(QUICK_START_GALLERY_VISIBILITY_TRG, this.isHidden);
         });
 
@@ -140,12 +141,17 @@ class UIManager {
 
         return container;
     }
-    toggleVisiblitiy(isHidden) {
-        const qsg = document.querySelectorAll('[class^="quickstartgallery__QuickStartContainer"]');
-        qsg.forEach(el=> {
-            el.style.display = isHidden ? 'none' : '';
-            //console.log(`Quick Start Gallery is now ${isHidden ? 'hidden' : 'visible'}.`);
-        });
+    toggleVisibility(isHidden) {
+        if (!this.switch || !this.switch.parentElement) {
+            return;
+        }
+        const rootElement = this.switch.parentElement;
+        const displayStyle = isHidden ? 'none' : '';
+        for (const child of rootElement.children) {
+            if (child.id !== 'nai-quickstart-gallery-switcher') {
+                child.style.display = displayStyle;
+            }
+        }
     }
 }
 
